@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Main {
     final static Scanner scanner = new Scanner(System.in);
-    final static String symbols = "0123456789abcdefghijklmnopqrstuvwxyz";
+    final static String DIGITS = "0123456789abcdefghijklmnopqrstuvwxyz";
 
     public static void main(String[] args) {
 
@@ -43,10 +43,8 @@ public class Main {
         }
     }
 
+
     static String fromDecimalConverter(BigDecimal n, int base) {
-        if (base == 10) {
-            return n.toPlainString();
-        }
 
         StringBuilder sb = new StringBuilder();
         BigInteger bigBase = BigInteger.valueOf(base);
@@ -55,7 +53,7 @@ public class Main {
 
         while (true) {
             int remainder = intPart.remainder(bigBase).intValue();
-            sb.append(symbols.charAt(remainder));
+            sb.append(DIGITS.charAt(remainder));
 
             if (intPart.divide(bigBase).compareTo(BigInteger.ZERO) == 0) {
                 break;
@@ -64,22 +62,20 @@ public class Main {
         }
 
         sb.reverse();
-        if (n.toString().contains(".")) { //!!!!!
+        if (n.scale() > 0) {
             sb.append(".");
         }
-        
 
         for (int i = 0; i < n.scale(); i++) {
             fractPart = fractPart.multiply(BigDecimal.valueOf(base));
             int value = fractPart.intValue();
-            sb.append(symbols.charAt(value));
+            sb.append(DIGITS.charAt(value));
 
             if (fractPart.compareTo(BigDecimal.ONE) > 0) {
                 fractPart = fractPart.subtract(new BigDecimal(fractPart.toBigInteger()));
             }
-
-
         }
+
         return sb.toString();
     }
 
@@ -95,7 +91,7 @@ public class Main {
                 deque.poll();
                 continue;
             }
-            int n = symbols.indexOf(deque.poll());
+            int n = DIGITS.indexOf(deque.poll());
             BigDecimal temp = BigDecimal.valueOf(n * Math.pow(base, --power));
             res = res.add(temp);
         }
